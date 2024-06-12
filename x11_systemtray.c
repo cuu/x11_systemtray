@@ -59,7 +59,7 @@ void rearrange_icons() {
     y_step = ICON_SIZE;
 
     if (XGetWindowAttributes(display, node->icon_window, &attributes) == 0) {
-      fprintf(stderr, "无法获取窗口属性\n");
+      fprintf(stderr, "Get icon window size failed\n");
     } else {
 
       x_step = attributes.width;
