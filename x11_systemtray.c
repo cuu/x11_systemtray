@@ -26,8 +26,15 @@ typedef struct IconNode {
 IconNode *icon_list = NULL;
 
 void add_icon(Window icon_window) {
+  XWindowAttributes attributes;
   IconNode *new_node = (IconNode *)malloc(sizeof(IconNode));
   new_node->icon_window = icon_window;
+
+  if (XGetWindowAttributes(display, icon_window, &attributes) == 0) {
+    fprintf(stderr, "Get icon window size failed\n");
+  } else {
+    printf("new icon w %d, h %d\n",attributes.width, attributes.height);
+  }
   new_node->next = icon_list;
   icon_list = new_node;
 }
@@ -175,6 +182,8 @@ int main(void) {
       handle_destroy_notify(&event);
     } else if (event.type == ButtonPress) {
       printf("Button pressed\n");
+    } else if (event.type == ConfigureNotify) {
+	rearrange_icons();
     }
   }
 
