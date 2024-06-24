@@ -175,10 +175,11 @@ int main(void) {
 
     if (event.type == Expose) {
       // Clear the window
-      XClearWindow(display, tray_window);
+      //XClearWindow(display, tray_window);
+	  rearrange_icons();
     } else if (event.type == ClientMessage) {
       handle_systray_message(&event);
-    } else if (event.type == DestroyNotify) {
+    } else if (event.type == DestroyNotify || event.type == UnmapNotify) {
       handle_destroy_notify(&event);
     } else if (event.type == ButtonPress) {
       printf("Button pressed\n");
