@@ -60,12 +60,13 @@ void rearrange_icons() {
   int x_step = ICON_SIZE;
   int y_step = ICON_SIZE;
 
+  //XSynchronize(display, True);
+
   for (IconNode *node = icon_list; node != NULL; node = node->next) {
 
     x_step = ICON_SIZE;
     y_step = ICON_SIZE;
 	
-	if(!node->icon_window) continue;
 
     if (XGetWindowAttributes(display, node->icon_window, &attributes) == 0) {
       fprintf(stderr, "Get icon window size failed\n");
@@ -108,6 +109,20 @@ void handle_destroy_notify(XEvent *event) {
   }
 }
 
+int handle_x11_error(Display *disp, XErrorEvent *error) {
+    char error_text[1024];
+
+    XGetErrorText(disp, error->error_code, error_text, sizeof(error_text));
+    fprintf(stderr, "X11 Error: %s\n", error_text);
+
+    if (error->error_code == BadWindow) {
+        fprintf(stderr, "BadWindow error caught, resourceid: 0x%lx\n", error->resourceid);
+        return 0;//ignore it ,avoid crash
+    }
+
+    return 0;
+}
+
 int main(void) {
   display = XOpenDisplay(NULL);
   if (display == NULL) {
@@ -115,6 +130,8 @@ int main(void) {
     exit(1);
   }
 
+  XSetErrorHandler(handle_x11_error);
+  
   int screen = DefaultScreen(display);
   Window root = RootWindow(display, screen);
 
