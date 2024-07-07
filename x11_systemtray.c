@@ -64,6 +64,8 @@ void rearrange_icons() {
 
     x_step = ICON_SIZE;
     y_step = ICON_SIZE;
+	
+	if(!node->icon_window) continue;
 
     if (XGetWindowAttributes(display, node->icon_window, &attributes) == 0) {
       fprintf(stderr, "Get icon window size failed\n");
